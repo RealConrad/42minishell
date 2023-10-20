@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_bonus.c                                      :+:      :+:    :+:   */
+/*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cwenz <cwenz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 06:24:10 by hkumbhan          #+#    #+#             */
-/*   Updated: 2023/10/16 12:37:28 by cwenz            ###   ########.fr       */
+/*   Updated: 2023/10/20 13:53:59 by cwenz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	handle_heredoc(t_pip_bonus *pipex)
 		close(pipex->hdfd[1]);
 		close_fds_bonus(pipex);
 		free_bonus(pipex);
-		exit (EXIT_SUCCESS);
+		exit(EXIT_SUCCESS);
 	}
 	else
 	{
@@ -59,28 +59,28 @@ void	handle_heredoc(t_pip_bonus *pipex)
 	}
 }
 
-int	pipex(int argc, char **argv, char **envp)
-{
-	int			i;
-	t_pip_bonus	*pipex;
-	int			return_value;
+// int	pipex(int argc, char **argv, char **envp)
+// {
+// 	int			i;
+// 	t_pip_bonus	*pipex;
+// 	int			return_value;
 
-	return_value = EXIT_SUCCESS;
-	i = 0;
-	if (argc < 5)
-		return (EXIT_FAILURE);
-	pipex = (t_pip_bonus *)ft_calloc(1, sizeof(t_pip_bonus));
-	if (pipex == NULL)
-		handle_error_bonus(ERR_MEMORY, pipex);
-	init(pipex, argc, argv, envp);
-	if (pipex->here_doc_flag == TRUE)
-	{
-		i = 3;
-		handle_heredoc(pipex);
-	}
-	else
-		i = 2;
-	return_value = create_pipes(pipex, i);
-	free_bonus(pipex);
-	return (return_value);
-}
+// 	return_value = EXIT_SUCCESS;
+// 	i = 0;
+// 	if (argc < 5)
+// 		return (EXIT_FAILURE);
+// 	pipex = (t_pip_bonus *)ft_calloc(1, sizeof(t_pip_bonus));
+// 	if (pipex == NULL)
+// 		handle_error_bonus(ERR_MEMORY, pipex);
+// 	init(pipex, argc, argv, envp);
+// 	if (pipex->here_doc_flag == TRUE)
+// 	{
+// 		i = 3;
+// 		handle_heredoc(pipex);
+// 	}
+// 	else
+// 		i = 2;
+// 	return_value = create_pipes(pipex, i);
+// 	free_bonus(pipex);
+// 	return (return_value);
+// }

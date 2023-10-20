@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_bonus.c                                    :+:      :+:    :+:   */
+/*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cwenz <cwenz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 10:40:04 by harsh             #+#    #+#             */
-/*   Updated: 2023/10/16 12:37:40 by cwenz            ###   ########.fr       */
+/*   Updated: 2023/10/20 13:51:30 by cwenz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,26 +41,22 @@ char	*find_cmd_path(t_pip_bonus *pipex, char *cmd)
 	return (NULL);
 }
 
-void	execute(t_pip_bonus *pipex, int i)
+void	execute(t_pip_bonus *pipex)
 {
 	char	*path;
-	char	**cmd_split;
 
-	cmd_split = ft_split_pipex(pipex->argv[i], ' ');
-	if (cmd_split == NULL)
-		handle_error_bonus(ERR_MEMORY, pipex);
-	path = find_cmd_path(pipex, cmd_split[0]);
+	path = find_cmd_path(pipex, pipex->argv[0]);
 	if (path == NULL)
 	{
-		error_bonus(ERR_CMD, cmd_split[0], pipex);
-		free_arr(cmd_split);
+		error_bonus(ERR_CMD, pipex->argv[0], pipex);
+		free_arr(pipex->argv);
 		exit(EXIT_FAILURE);
 	}
-	if (execve(path, cmd_split, pipex->envp) == -1)
+	if (execve(path, pipex->argv, pipex->envp) == -1)
 	{
 		free(path);
-		error_bonus(ERR_CMD, cmd_split[0], pipex);
-		free_arr(cmd_split);
+		error_bonus(ERR_CMD, pipex->argv[0], pipex);
+		free_arr(pipex->argv);
 		exit(EXIT_FAILURE);
 	}
 	return ;

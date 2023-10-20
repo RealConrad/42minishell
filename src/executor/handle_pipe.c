@@ -6,7 +6,7 @@
 /*   By: cwenz <cwenz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 09:26:37 by harsh             #+#    #+#             */
-/*   Updated: 2023/10/16 15:59:03 by cwenz            ###   ########.fr       */
+/*   Updated: 2023/10/20 13:52:10 by cwenz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@ void	open_infile(t_pip_bonus *pipex)
 {
 	if (pipex->here_doc_flag == FALSE)
 	{
-		pipex->infile_fd = open_file(pipex->argv[1], 0);
+		pipex->infile_fd = open_file(pipex->argv[1]);
 		if (pipex->infile_fd < 0)
 			error_bonus(ERR_INFILE, pipex->argv[1], pipex);
 	}
 	dup2(pipex->infile_fd, STDIN_FILENO);
 }
 
-void	first_child(t_pip_bonus *pipex, int i)
+void	first_child(t_pip_bonus *pipex)
 {
 	int	pid;
 
@@ -39,7 +39,7 @@ void	first_child(t_pip_bonus *pipex, int i)
 		dup2(pipex->fd[1], STDOUT_FILENO);
 		close(pipex->fd[1]);
 		close_fds_bonus(pipex);
-		execute(pipex, i);
+		execute(pipex);
 	}
 	else
 	{
@@ -50,7 +50,7 @@ void	first_child(t_pip_bonus *pipex, int i)
 	}
 }
 
-void	create_children(t_pip_bonus *pipex, int i)
+void	create_children(t_pip_bonus *pipex)
 {
 	int	pid;
 
@@ -65,7 +65,7 @@ void	create_children(t_pip_bonus *pipex, int i)
 		dup2(pipex->fd[1], STDOUT_FILENO);
 		close(pipex->fd[1]);
 		close_fds_bonus(pipex);
-		execute(pipex, i);
+		execute(pipex);
 	}
 	else
 	{
@@ -76,7 +76,7 @@ void	create_children(t_pip_bonus *pipex, int i)
 	}
 }
 
-void	last_child(t_pip_bonus *pipex, int i)
+void	last_child(t_pip_bonus *pipex)
 {
 	int	pid;
 
@@ -90,27 +90,29 @@ void	last_child(t_pip_bonus *pipex, int i)
 		dup2(pipex->outfile_fd, STDOUT_FILENO);
 		close(pipex->fd[0]);
 		close_fds_bonus(pipex);
-		execute(pipex, i);
+		execute(pipex);
 	}
 }
 
-int	create_pipes(t_pip_bonus *pipex, int i)
+int	create_pipes(t_pip_bonus *pipex)
 {
 	int	status;
+	int	i;
 
+	i = 0;
 	status = EXIT_SUCCESS;
 	if (pipex->here_doc_flag)
-		pipex->outfile_fd = open_file(pipex->argv[pipex->argc - 1], 2);
+		pipex->outfile_fd = open_file(pipex->argv[pipex->argc - 1]);
 	else
-		pipex->outfile_fd = open_file(pipex->argv[pipex->argc - 1], 1);
-	first_child(pipex, i);
-	i++;
-	while (i < pipex->argc - 2)
+		pipex->outfile_fd = open_file(pipex->argv[pipex->argc - 1]);
+	first_child(pipex);
+	
+	while (i < pipex->num_pipes)
 	{
-		create_children(pipex, i);
+		create_children(pipex);
 		i++;
 	}
-	last_child(pipex, i);
+	last_child(pipex);
 	close_fds_bonus(pipex);
 	return (status);
 }
